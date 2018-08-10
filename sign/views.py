@@ -79,15 +79,15 @@ def search_phone(request):
 @login_required
 def sign_index(request, eid):
     event = get_object_or_404(Event, id=eid)
-    guest_list = len(get_list_or_404(Guest, event_id=eid))
-    guest_sign = len(get_list_or_404(Guest, event_id=eid, sign=1))
+    guest_list = len(Guest.objects.filter(event_id=eid))
+    guest_sign = len(Guest.objects.filter(event_id=eid, sign=1))
     return render(request, 'sign_index.html', {'event': event, 'guest_list': guest_list, 'guest_sign': guest_sign})
 
 @login_required
 def sign_index_action(request, eid):
     event = get_object_or_404(Event, id=eid)
-    guest_list = len(get_list_or_404(Guest, event_id=eid))
-    guest_sign = len(get_list_or_404(Guest, event_id=eid, sign=1))
+    guest_list = len(Guest.objects.filter(event_id=eid))
+    guest_sign = len(Guest.objects.filter(event_id=eid, sign=1))
     phone = request.POST.get('phone', '')
     print(phone)
     result = Guest.objects.filter(phone=phone)
@@ -98,7 +98,7 @@ def sign_index_action(request, eid):
         return render(result, 'sign_index.html', {'event': event, 'hint': 'event id or phone error.', 'guest_list': guest_list, 'guest_sign': guest_sign})
     result = Guest.objects.get(phone=phone, event_id=eid)
     if result.sign:
-        return render(request, 'sign_index.html', {'event': event, 'hint': "user has sign in", 'guest_list': guest_list, 'guest_sign': guest_sign})
+        return render(request, 'sign_index.html', {'event': event, 'hint': "user has signed in", 'guest_list': guest_list, 'guest_sign': guest_sign})
     else:
         Guest.objects.filter(phone=phone, event_id=eid).update(sign='1')
         guest_sign = guest_sign + 1

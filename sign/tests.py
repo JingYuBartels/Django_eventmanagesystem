@@ -112,3 +112,33 @@ class GuestManageTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(b"Anker", response.content)
         self.assertIn(b"6505330033", response.content)
+
+class SignIndexActionTest(TestCase):
+    def setUp(self):
+        User.objects.create_user('admin', 'admin@mail.com', 'admin123')
+        Event.objects.create(id=1, name="xiaomi5", limit=2000, address="beijing", status=1, start_time='2018-10-8 12:30:00')
+        Event.objects.create(id=2, name="oneplus4", limit=2000, address="shenzhen", status=1, start_time="2018-10-20 09:30:00")
+        Guest.objects.create(realname='Alen', phone=5437891231, email='alen@mail.com', sign=0, event_id=1)
+        Guest.objects.create(realname='una', phone=8765042312, email='una@mail.com', sign=1, event_id=2)
+        self.login_user = {'username': "admin", "password": 'admin123'}
+        self.client.post('/login_action/', data=self.login_user)
+
+    def test_sign_index_action_phone_null(self):
+        response = self.client.post('/sign_index_action/1/', {'phone': ''})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"phone error.", response.content)
+
+    def test_sign_index_action_phone_or_event_id_error(self):
+        response = self.client.post('/sign_index_action/2/', {'phone': '5437891231'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"event id or phone error.", response.content)
+
+    def test_sign_index_action_user_has_signed(self):
+        response = self.client.post('/sign_index_action/2/', {'phone': '8765042312'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"user has signed in", response.content)
+
+    def test_sign_index_action_sign_success(self):
+        response = self.client.post('/sign_index_action/1/', {'phone': '5437891231'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"sign in success!", response.content)
