@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    <title>Guest Manage</title>
+</head>
+
+ <div style="float:right;">
+        <a>Hey, {{user}} welcome </a><hr/>
+    </div>
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/guest_manage/">Guest Manage System</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a href="/event_manage/">Events</a> </li>
+                <li class="active"><a href="#">Guests</a> </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">{{user}}</a></li>
+                <li><a href="/logout/">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<!--Guest Search -->
+ <div class="container theme-showcase" role="main">
+    <div class="page-header" style="padding-top:60px;">
+            <div id="navbar" class="navbar-collapse collapse">
+                <form class="navbar-form" method="get" action="/search_phone/">
+                    <div class="form-group">
+                        <input name="phone" type="text" placeholder="phone number" class="form-control">
+                    </div>
+                    <button type="submit" class="btn btn-success">Search</button>
+                </form>
+            </div>
+    </div>
+<!--Guest List-->
+<div class="row" style="padding-top:80px;">
+    <div class="col-md-6">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>name</th>
+                <th>phone</th>
+                <th>Email</th>
+                <th>signed</th>
+                <th>Event_id</th>
+            </tr>
+            </thead>
+        <tbody>
+        {% for guest in guests %}
+        <tr>
+            <td>{{guest.id}}</td>
+            <td>{{guest.realname}}</td>
+            <td>{{guest.phone}}</td>
+            <td>{{guest.email}}</td>
+            <td>{{guest.sign}}</td>
+            <td>{{guest.event}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+     </table>
+    </div>
+
+</div>
+<!-- paginator -->
+<div class="pagination">
+    <span class="step-link">
+        {% if search_phone %}
+         {% if guest.has_previous %}}
+         <a href="?page={{guests.previous_page_number}}&phone={{search_phone}}">previous</a>
+         {% endif %}
+         <span class="current">
+            Page {{guests.number}} of {{guests.paginator.num_pages}}.
+
+         </span>
+         {% if guests.has_next %}
+         <a href="?page={{guests.next_page_number}}&phone={{search_phone}}">next</a>
+        {% endif %}
+        <!-- If search_phone is False, it means no phone search functionality. Then the list is the whole guest list -->
+        {% else %}
+        {% if guests.has_previous %}
+        <a href="?page={{guests.previous_page_number}}">previous</a>
+        {% endif %}
+        <span class="current">
+            Page {{guests.number}} of {{guests.paginator.num_pages}}.
+        </span>
+        {% if guests.has_next%}
+        <a href="?page={{guests.next_page_number}}">next</a>
+        {% endif %}
+        {% endif %}
+    </span>
+</div>
+</div>
+</body>
+</html>
