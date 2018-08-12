@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% load bootstrap3 %}
-    {% bootstrap_css %}
-    {% bootstrap_javascript %}
+
     <title>login Page</title>
+
+        <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <link href="//v3.bootcss.com/examples/signin/signin.css" rel="stylesheet">
+
+    </style>
 </head>
-<body style="margin-left: 80px;">
+<body style="margin-left: 200px;">
     <h1>Event manage System</h1>
     <form method="post" action="/login_action/">
         <input name="username" type="text" placeholder="username"><br>
 
         <input name="password" type="password" placeholder="password"><br>
         {{error}}<br>
-        <button id="btn" type="submit">登录</button>
+        <button id="btn" type="submit">login</button>
         {% csrf_token %}
     </form>
 </body>
